@@ -3,6 +3,7 @@ import CitySearch from './CitySearch';
 import Temperature from './Temp';
 import Condition from './Condition';
 import Navigation from './Navigation';
+import Wind from './Wind';
 import './App.css';
 
 const WeatherApp = () => {
@@ -36,9 +37,34 @@ const WeatherApp = () => {
    return (
     <div className='main-container'>
         <CitySearch activeModel={activeModel} onSearch={handleCitySearch} />
-        <Navigation setActiveModel={setActiveModel} />
-        {activeModel === 'temperature' && ( <Temperature cityName={data?.name} temperatureData={data?.main?.temp} /> )}
-        {activeModel === 'condition' &&  ( <Condition cityName={data?.name} conditionData={data?.weather?.[0]?.description}/> )}
+        {data?.name ? (
+             <div className='display-area'>
+             <Navigation setActiveModel={setActiveModel} />
+             {activeModel === 'temperature' && 
+             (<Temperature 
+                cityName={data?.name} 
+                temp={`Temperature: ${data?.main?.temp}°F`} 
+                temp_max={`Max-Temp: ${data?.main?.temp_max}°F`}
+                temp_min={`Min-Temp: ${data?.main?.temp_min}°F`}/> 
+             )}
+             {activeModel === 'condition' &&  
+             ( <Condition 
+                cityName={data?.name} 
+                conditionData={data?.weather?.[0]?.description}/> 
+             )}
+             {activeModel === 'wind' && 
+             (<Wind 
+                cityName={data?.name}
+                windDeg={`Wind-deg: ${data?.wind?.deg}`}
+                windSpeed={`Wind speed: ${data?.wind?.speed}`} />
+             )}
+         </div>
+        ) : (
+        <div className='display-area reminder'>
+            <img src="src/assets/cloud.png" className='cloud-Img' />
+            <h2>Enter the City to Check the Weather</h2>
+        </div>
+        )}
     </div>
    );
 };
